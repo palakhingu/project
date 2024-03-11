@@ -13,6 +13,8 @@ export default {
       cPassword: "",
       errorMsg: "",
       router: useRouter(),
+      emailExistErr:"",
+      flag:true,
     };
   },
   methods: {
@@ -24,7 +26,9 @@ export default {
       localStorage.setItem("userInfo", JSON.stringify(arr));
     },
     add() {
+      if(this.flag){
       let arr = this.getData();
+
       if (arr === null) {
         const obj = {
           name: this.name,
@@ -37,18 +41,32 @@ export default {
         let data = [obj];
         this.setData(data);
         this.router.push({ path: "/login" });
-      } else {
+
+      } 
+      else {
+        let userExist =arr.find((val)=>val.email===this.email);
+        if(userExist){
+        this.emailExistErr="email already exist"
+       }
+       else{
+        this.emailExistErr=""
         const obj = {
-          name: this.name,
-          email: this.email,
-          dob: this.dob,
-          number: this.number,
-          password: this.password,
-          cPassword: this.cPassword,
-        };
-        arr.push(obj);
-        this.setData(arr);
-        this.router.push({ path: "/login" });
+            name: this.name,
+            email: this.email,
+            dob: this.dob,
+            number: this.number,
+            password: this.password,
+            cPassword: this.cPassword,
+          };
+          arr.push(obj);
+          this.setData(arr);
+          this.router.push({ path: "/login" })
+       
+       }
+
+     
+        
+
       }
       this.name = "";
       this.email = "";
@@ -56,25 +74,70 @@ export default {
       this.number = "";
       this.password = "";
       this.cPassword = "";
+      }
+      else{
+        this.errorMsg="Please check your inputs"
+      }
+     
     },
   },
   watch: {
-    // name(val) {
-    //   if (val.match(/^[a-zA-Z]+$/)) {
-    //     this.errorMsg = "";
-    //   } else if (val == "") {
-    //     this.errorMsg = "";
-    //   } else {
-    //     this.errorMsg = "please enter only alphabate";
-    //   }
-    // },
+    name(val) {
+      if (val.match(/^[a-zA-Z]+$/)) {
+        this.errorMsg = "";
+        this.flag=true
+      } else if (val == "") {
+        this.errorMsg = "";
+      } else {
+        this.errorMsg = "please enter only alphabate";
+        this.flag=false;
+      }
+    },
     number(val) {
       if (/^\d{10}$/.test(val)) {
         this.errorMsg = "";
-      } else {
+        this.flag=true
+
+      }
+      else if(val==""){
+        this.errorMsg=""
+      } 
+      else {
         this.errorMsg = "please enter 10 digit number";
+        this.flag=false;
+
       }
     },
+    password(val) {
+      if(val.length<4){
+        this.errorMsg="password must be greater than 4 digit"
+        this.flag=false;
+
+      }
+      else if(val==""){
+        this.errorMsg="";
+      }
+      else{
+        this.errorMsg="";
+        this.flag=true
+
+      }
+    },
+    cPassword(val){
+      if(this.password !== val){
+        this.errorMsg="Password does not match"
+        this.flag=false;
+
+      }
+      else if(val=""){
+        this.errorMsg=""
+      }
+      else{
+        this.errorMsg=""
+        this.flag=true
+
+      }
+    }
   },
 };
 
@@ -141,7 +204,7 @@ export default {
   <div class="container">
     <div class="row">
       <div class="col-lg-3 col-md-1 col-sm-1"></div>
-      <div class="col-lg-5 col-md-9 col-sm-1">
+      <div class="col-lg-5 col-md-12 col-sm-12">
         <form action="" class="form-control bg-light p-5" v-on:submit.prevent="add">
           <h4 class="text-center">Register</h4>
           <br />
@@ -149,11 +212,12 @@ export default {
           <input type="email" class="form-control mb-4" placeholder="Enter Email" v-model="email" required />
           <label for="" class="">Enter Date Of Birth</label><br />
           <input type="date" class="form-control mb-4" v-model="dob" required />
-          <input type="number" name="" id="" class="form-control mb-4" placeholder="Enter Phone Number" v-model="number" required />
+          <input type="number" name="" id="" class="form-control mb-4" placeholder="Enter Phone Number" v-model="number" required maxlength="10" title="please enter 10 digit number"/>
           <input type="password" name="" id="" class="form-control mb-4" placeholder="Enter password" v-model="password" required />
           <input type="password" name="" id="" class="form-control mb-4" placeholder="Confirm Password" v-model="cPassword" required />
 
           <div v-if="errorMsg" class="fs-5 text-danger text-center">{{ errorMsg }}</div>
+          <div v-if="errorMsg" class="fs-5 text-danger text-center">{{ emailExistErr }}</div>
 
           <br />
           <div>Alreday have an Acoout? <router-link to="/login">Sign in</router-link></div>
