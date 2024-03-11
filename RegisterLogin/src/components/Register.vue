@@ -44,13 +44,13 @@ export default {
 
       } 
       else {
-        let userExist =arr.find((val)=>val.email===this.email);
-        if(userExist){
-        this.emailExistErr="email already exist"
-       }
-       else{
-        this.emailExistErr=""
-        const obj = {
+        if (arr.some(user => user.email === this.email)) {
+          this.errorMsg = "Email already exists";
+          return; // Stop execution if email already exists
+      }
+      else{
+            this.errorMsg=""
+            const obj = {
             name: this.name,
             email: this.email,
             dob: this.dob,
@@ -61,8 +61,8 @@ export default {
           arr.push(obj);
           this.setData(arr);
           this.router.push({ path: "/login" })
-       
-       }
+      }
+
 
      
         
@@ -217,8 +217,6 @@ export default {
           <input type="password" name="" id="" class="form-control mb-4" placeholder="Confirm Password" v-model="cPassword" required />
 
           <div v-if="errorMsg" class="fs-5 text-danger text-center">{{ errorMsg }}</div>
-          <div v-if="errorMsg" class="fs-5 text-danger text-center">{{ emailExistErr }}</div>
-
           <br />
           <div>Alreday have an Acoout? <router-link to="/login">Sign in</router-link></div>
           <button type="submit" class="btn btn-dark mt-4">Submit</button>
