@@ -126,3 +126,86 @@ export default {
   margin: 70px auto;
 }
 </style>
+<!-- <template>
+  <div>
+    <input v-model="email" placeholder="Email">
+    <input type="password" v-model="password" placeholder="Password">
+    <button @click="login">Login</button>
+    <button @click="signInWithGoogle">Sign In with Google</button>
+    <router-link to="/registration">Don't have an account? Sign Up</router-link>
+
+    <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+  </div>
+</template>
+
+<script>
+import firebase from 'firebase/app';
+import 'firebase/auth';
+
+export default {
+  data() {
+    return {
+      email: '',
+      password: '',
+      errorMessage: ''
+    };
+  },
+  methods: {
+    login() {
+      firebase.auth().signInWithEmailAndPassword(this.email, this.password)
+        .then((userCredential) => {
+          // Login successful
+          console.log('Login successful', userCredential.user);
+        })
+        .catch((error) => {
+          // Handle login errors
+          console.error('Login failed', error);
+          this.handleLoginError(error);
+        });
+    },
+    signInWithGoogle() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      firebase.auth().signInWithPopup(provider)
+        .then((result) => {
+          // Google sign-in successful
+          console.log('Google sign-in successful', result.user);
+        })
+        .catch((error) => {
+          // Handle Google sign-in errors
+          console.error('Google sign-in failed', error);
+          this.handleGoogleSignInError(error);
+        });
+    },
+    handleLoginError(error) {
+      switch (error.code) {
+        case 'auth/user-not-found':
+          this.errorMessage = 'User not found. Please check your email and try again.';
+          break;
+        case 'auth/wrong-password':
+          this.errorMessage = 'Incorrect password. Please try again.';
+          break;
+        default:
+          this.errorMessage = 'An error occurred. Please try again later.';
+          break;
+      }
+    },
+    handleGoogleSignInError(error) {
+      switch (error.code) {
+        case 'auth/account-exists-with-different-credential':
+          this.errorMessage = 'An account already exists with the same email address but different sign-in credentials.';
+          break;
+        default:
+          this.errorMessage = 'An error occurred. Please try again later.';
+          break;
+      }
+    }
+  }
+}
+</script>
+
+<style>
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
+</style> -->
