@@ -29,8 +29,8 @@ export default {
 <template>
   <div class="container">
     <div class="row">
-      <div class="col-lg-4 col-md-1 col-sm-1"></div>
-      <div class="col-lg-4 col-md-12 col-sm-12">
+      <div class="col-lg-3 col-md-1 col-sm-1"></div>
+      <div class="col-lg-4 col-md-10 col-sm-12">
         <form action="" class="form-control bg-light p-5" v-on:submit.prevent="check">
           <h4 class="text-center">Login</h4>
           <br />

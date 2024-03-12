@@ -11,7 +11,6 @@ export default {
       cPassword: "",
       errorMsg: "",
       router: useRouter(),
-      emailExistErr: "",
       flag: true,
     };
   },
@@ -83,14 +82,12 @@ export default {
   },
   watch: {
     name(val) {
-      if (val.match(/^[a-zA-Z]+$/)) {
-        this.errorMsg = "";
-        this.flag = true;
-      } else if (val == "") {
-        this.errorMsg = "";
-      } else {
+      if (!val.match(/^[a-zA-Z]+$/)) {
         this.errorMsg = "please enter only alphabates";
         this.flag = false;
+      } else {
+        this.errorMsg = "";
+        this.flag = true;
       }
     },
   },
@@ -101,14 +98,14 @@ export default {
   <div class="container">
     <div class="row">
       <div class="col-lg-3 col-md-1 col-sm-1"></div>
-      <div class="col-lg-5 col-md-12 col-sm-12">
+      <div class="col-lg-5 col-md-10 col-sm-12">
         <form action="" class="form-control bg-light p-5" @:submit.prevent="add">
           <h4 class="text-center">Register</h4>
           <br />
           <input type="text" class="form-control mb-4" placeholder="Enter Name" v-model="name" required />
           <input type="email" class="form-control mb-4" placeholder="Enter Email" v-model="email" required />
           <label for="" class="">Enter Date Of Birth</label><br />
-          <input type="date" class="form-control mb-4" v-model="dob" required />
+          <input type="date" class="form-control mb-4" v-model="dob" required max="2024-03-12" />
           <input type="number" name="" id="" class="form-control mb-4" placeholder="Enter Phone Number" v-model="number" required />
           <input type="password" name="" id="" class="form-control mb-4" placeholder="Enter password" v-model="password" required />
           <input type="password" name="" id="" class="form-control mb-4" placeholder="Confirm Password" v-model="cPassword" required />
