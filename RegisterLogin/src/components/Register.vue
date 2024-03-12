@@ -1,6 +1,4 @@
 <script>
-// import { ref, watch, computed } from "vue";
-// import { isProxy, toRaw } from "vue";
 import { useRouter } from "vue-router";
 export default {
   data() {
@@ -13,8 +11,8 @@ export default {
       cPassword: "",
       errorMsg: "",
       router: useRouter(),
-      emailExistErr:"",
-      flag:true,
+      emailExistErr: "",
+      flag: true,
     };
   },
   methods: {
@@ -26,178 +24,77 @@ export default {
       localStorage.setItem("userInfo", JSON.stringify(arr));
     },
     add() {
-      if(this.flag){
-      let arr = this.getData();
+      if (this.flag) {
+        let arr = this.getData();
 
-      if (arr === null) {
-        const obj = {
-          name: this.name,
-          email: this.email,
-          dob: this.dob,
-          number: this.number,
-          password: this.password,
-          cPassword: this.cPassword,
-        };
-        let data = [obj];
-        this.setData(data);
-        this.router.push({ path: "/login" });
-
-      } 
-      else {
-        if (arr.some(user => user.email === this.email)) {
-          this.errorMsg = "Email already exists";
-          return; // Stop execution if email already exists
-      }
-      else{
-            this.errorMsg=""
+        if (arr === null) {
+          if (this.password !== this.cPassword) {
+            this.errorMsg = "Password does not match";
+            return;
+          } else if (!/^\d{10}$/.test(this.number)) {
+            this.errorMsg = "please enter 10 digit number";
+            return;
+          } else {
             const obj = {
-            name: this.name,
-            email: this.email,
-            dob: this.dob,
-            number: this.number,
-            password: this.password,
-            cPassword: this.cPassword,
-          };
-          arr.push(obj);
-          this.setData(arr);
-          this.router.push({ path: "/login" })
+              name: this.name,
+              email: this.email,
+              dob: this.dob,
+              number: this.number,
+              password: this.password,
+            };
+            let data = [obj];
+            this.setData(data);
+            this.router.push({ path: "/login" });
+          }
+        } else {
+          if (arr.some((user) => user.email === this.email)) {
+            this.errorMsg = "Email already exists";
+            return;
+          } else if (this.password !== this.cPassword) {
+            this.errorMsg = "Password does not match ";
+            return;
+          } else if (!/^\d{10}$/.test(this.number)) {
+            this.errorMsg = "please enter 10 digit number";
+            return;
+          } else {
+            this.errorMsg = "";
+            const obj = {
+              name: this.name,
+              email: this.email,
+              dob: this.dob,
+              number: this.number,
+              password: this.password,
+            };
+            arr.push(obj);
+            this.setData(arr);
+            this.router.push({ path: "/login" });
+          }
+        }
+        this.name = "";
+        this.email = "";
+        this.dob = "";
+        this.number = "";
+        this.password = "";
+        this.cPassword = "";
+      } else {
+        this.errorMsg = "Please check your inputs";
       }
-
-
-     
-        
-
-      }
-      this.name = "";
-      this.email = "";
-      this.dob = "";
-      this.number = "";
-      this.password = "";
-      this.cPassword = "";
-      }
-      else{
-        this.errorMsg="Please check your inputs"
-      }
-     
     },
   },
   watch: {
     name(val) {
       if (val.match(/^[a-zA-Z]+$/)) {
         this.errorMsg = "";
-        this.flag=true
+        this.flag = true;
       } else if (val == "") {
         this.errorMsg = "";
       } else {
-        this.errorMsg = "please enter only alphabate";
-        this.flag=false;
+        this.errorMsg = "please enter only alphabates";
+        this.flag = false;
       }
     },
-    number(val) {
-      if (/^\d{10}$/.test(val)) {
-        this.errorMsg = "";
-        this.flag=true
-
-      }
-      else if(val==""){
-        this.errorMsg=""
-      } 
-      else {
-        this.errorMsg = "please enter 10 digit number";
-        this.flag=false;
-
-      }
-    },
-    password(val) {
-      if(val.length<4){
-        this.errorMsg="password must be greater than 4 digit"
-        this.flag=false;
-
-      }
-      else if(val==""){
-        this.errorMsg="";
-      }
-      else{
-        this.errorMsg="";
-        this.flag=true
-
-      }
-    },
-    cPassword(val){
-      if(this.password !== val){
-        this.errorMsg="Password does not match"
-        this.flag=false;
-
-      }
-      else if(val=""){
-        this.errorMsg=""
-      }
-      else{
-        this.errorMsg=""
-        this.flag=true
-
-      }
-    }
   },
 };
-
-// const add = () => {
-//   if (name.value < 3) {
-//     errorMsg.value = "Name is required";
-//     return;
-//   } else if (number.value.length < 10) {
-//     errorMsg.value = "please enter 10 digit mobile number";
-//   } else if (password.value.length < 4) {
-//     errorMsg.value = "password must be 4 character long";
-//   } else if (cPassword.value.length < 4) {
-//     errorMsg.value = "password must be 4 character long";
-//   } else if (password.value !== cPassword.value) {
-//     errorMsg.value = "password not match";
-//   } else {
-//     errorMsg.value = "";
-
-//     let arr = getData();
-//     console.log(arr);
-//     if (arr === null) {
-//       const obj = {
-//         name: name.value,
-//         email: email.value,
-//         dob: dob.value,
-//         number: number.value,
-//         password: password.value,
-//         cPassword: cPassword.value,
-//       };
-//       let data = [obj];
-//       setData(data);
-//     } else {
-//       const obj = {
-//         name: name.value,
-//         email: email.value,
-//         dob: dob.value,
-//         number: number.value,
-//         password: password.value,
-//         cPassword: cPassword.value,
-//       };
-//       arr.push(obj);
-//       setData(arr);
-//     }
-//     name.value = "";
-//     email.value = "";
-//     dob.value = "";
-//     number.value = "";
-//     password.value = "";
-//     cPassword.value = "";
-//   }
-// };
-// //get data
-// function getData() {
-//   let arr = JSON.parse(localStorage.getItem("userInfo"));
-//   return arr;
-// }
-// //set data
-// function setData(arr) {
-//   localStorage.setItem("userInfo", JSON.stringify(arr));
-// }
 </script>
 
 <template>
@@ -205,24 +102,23 @@ export default {
     <div class="row">
       <div class="col-lg-3 col-md-1 col-sm-1"></div>
       <div class="col-lg-5 col-md-12 col-sm-12">
-        <form action="" class="form-control bg-light p-5" v-on:submit.prevent="add">
+        <form action="" class="form-control bg-light p-5" @:submit.prevent="add">
           <h4 class="text-center">Register</h4>
           <br />
           <input type="text" class="form-control mb-4" placeholder="Enter Name" v-model="name" required />
           <input type="email" class="form-control mb-4" placeholder="Enter Email" v-model="email" required />
           <label for="" class="">Enter Date Of Birth</label><br />
           <input type="date" class="form-control mb-4" v-model="dob" required />
-          <input type="number" name="" id="" class="form-control mb-4" placeholder="Enter Phone Number" v-model="number" required maxlength="10" title="please enter 10 digit number"/>
+          <input type="number" name="" id="" class="form-control mb-4" placeholder="Enter Phone Number" v-model="number" required />
           <input type="password" name="" id="" class="form-control mb-4" placeholder="Enter password" v-model="password" required />
           <input type="password" name="" id="" class="form-control mb-4" placeholder="Confirm Password" v-model="cPassword" required />
 
           <div v-if="errorMsg" class="fs-5 text-danger text-center">{{ errorMsg }}</div>
           <br />
-          <div>Alreday have an Acoout? <router-link to="/login">Sign in</router-link></div>
+          <div>Alreday have an Account? <router-link to="/login">Sign in</router-link></div>
           <button type="submit" class="btn btn-dark mt-4">Submit</button>
         </form>
       </div>
-      <div class="col-lg-4 col-md-1 col-sm-1"></div>
     </div>
   </div>
 </template>
