@@ -7,6 +7,9 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 
+const app = createApp(App);
+app.use(router);
+
 const firebaseConfig = {
   apiKey: "AIzaSyC3vlSjXFo2U3SycNKnWleQFEKAj8Q6shk",
   authDomain: "fir-auth-15721.firebaseapp.com",
@@ -15,37 +18,22 @@ const firebaseConfig = {
   messagingSenderId: "275501624741",
   appId: "1:275501624741:web:17f7705c4894313479cc4c",
 };
+
 firebase.initializeApp(firebaseConfig);
 
-const app = createApp(App);
+router.beforeEach((to, from, next) => {
+  const currentUser = firebase.auth().currentUser;
+  console.log(to);
+  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
 
-app.use(router);
+  if (requiresAuth && !currentUser) {
+    next("/login");
+  } else if (requiresAuth && currentUser) {
+    // to.path = "/dashboard";
+  } else {
+    next();
+  }
+});
+
 app.config.globalProperties.$firebase = firebase;
-
 app.mount("#app");
-
-// import Vue from 'vue'
-// import App from './App.vue'
-// import firebase from 'firebase/app'
-// import 'firebase/auth'
-// import 'firebase/firestore'
-
-// Vue.config.productionTip = false
-
-// // Initialize Firebase
-// const firebaseConfig = {
-//   apiKey: "YOUR_API_KEY",
-//   authDomain: "YOUR_AUTH_DOMAIN",
-//   projectId: "YOUR_PROJECT_ID",
-//   storageBucket: "YOUR_STORAGE_BUCKET",
-//   messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-//   appId: "YOUR_APP_ID"
-// };
-
-// firebase.initializeApp(firebaseConfig);
-
-// Vue.prototype.$firebase = firebase;
-
-// new Vue({
-//   render: h => h(App),
-// }).$mount('#app')

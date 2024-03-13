@@ -42,7 +42,7 @@ export default {
               .set(userInfo)
               .then(() => {
                 console.log("User data saved successfully");
-                this.router.push({ path: "/login" });
+                this.router.push("/login");
               })
               .catch((error) => {
                 console.error("Error adding user data: ", error);
@@ -51,10 +51,9 @@ export default {
           })
           .catch((error) => {
             console.error("Error creating user: ", error);
-            // this.errorMsg = error.message;
-            if (error.message === "Firebase: Password should be at least 6 characters (auth/weak-password).") {
+            if (error.code === "auth/weak-password") {
               this.errorMsg = "Password should be at least 6 characters";
-            } else if (error.message === "Firebase: The email address is already in use by another account. (auth/email-already-in-use).") {
+            } else if (error.message === "auth/email-already-in-use") {
               this.errorMsg = "email already exists";
             } else {
               this.errorMsg = "";
@@ -69,14 +68,15 @@ export default {
         .auth()
         .signInWithPopup(provider)
         .then((result) => {
+          console.log("result :", result);
           let token = result.credential.accessToken;
           let user = result.user;
-          console.log(token); // Token
-          console.log(user); // User that was authenticated
-          this.router.push({ path: "/dashboard" });
+          console.log(token);
+          console.log(user);
+          this.router.push("/dashboard");
         })
         .catch((err) => {
-          console.log(err); 
+          console.log(err);
         });
     },
   },
@@ -84,10 +84,8 @@ export default {
     name(val) {
       if (!val.match(/^[a-zA-Z]+$/)) {
         this.errorMsg = "please enter only alphabates";
-        this.flag = false;
       } else {
         this.errorMsg = "";
-        this.flag = true;
       }
     },
   },

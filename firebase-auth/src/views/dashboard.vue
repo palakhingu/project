@@ -1,5 +1,6 @@
 <script>
 import { useRouter } from "vue-router";
+// import router from "../router/index";
 export default {
   data() {
     return {
@@ -13,7 +14,7 @@ export default {
         .signOut()
         .then(() => {
           alert("Successfully signed out.");
-          this.router.push({ path: "/" });
+          this.router.push("/");
         });
     },
   },
