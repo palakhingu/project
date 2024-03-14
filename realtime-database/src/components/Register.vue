@@ -75,11 +75,4 @@ export default {
   margin: 70px auto;
 }
 </style>
-<!-- Today's Update:
- Learning Project: ( @RAVI GAUD sir )
- => vue.js:
-    - completed firebase google authentication 
-    - learned about the vue Navigation Guards 
-    - restricted user to access dashboard page without log in  
- Tomorrow's task:
- => continue with vue.js task -->
+
