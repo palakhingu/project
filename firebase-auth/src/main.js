@@ -28,8 +28,8 @@ router.beforeEach((to, from, next) => {
 
   if (requiresAuth && !currentUser) {
     next("/login");
-  } else if (requiresAuth && currentUser) {
-    // to.path = "/dashboard";
+  } else if (currentUser) {
+    next();
   } else {
     next();
   }

@@ -5,24 +5,70 @@ import axios from "axios";
 export default {
   data() {
     return {
-      user: {
-        email: "",
-        password: "",
-        name: "",
-        dob: "",
-        cPassword: "",
-        number: "",
-      },
+      // user: {
+      email: "",
+      password: "",
+      name: "",
+      dob: "",
+      cPassword: "",
+      number: "",
+      // },
       router: useRouter(),
       errorMsg: "",
+      postData: [],
     };
   },
+
   methods: {
     AddData() {
-      axios.post(`https://fir-auth-15721-default-rtdb.firebaseio.com/user.json`, this.user).then((response) => {
-        console.log(response);
-        alert("added");
-      });
+      if (!/^\d{10}$/.test(this.number)) {
+        this.errorMsg = "please enter 10 digit number";
+        return;
+      } else if (this.password !== this.cPassword) {
+        this.errorMsg = "Password does not match ";
+        return;
+      } else {
+        this.$firebase
+          .auth()
+          .createUserWithEmailAndPassword(this.email, this.password)
+          .then((userCredential) => {
+            const user = userCredential.user;
+            const userInfo = {
+              name: this.name,
+              email: this.email,
+              dob: this.dob,
+              number: this.number,
+              password: this.password,
+            };
+            axios
+              .post(`https://fir-auth-15721-default-rtdb.firebaseio.com/user.json`, userInfo)
+              .then((response) => {
+                console.log("added");
+                this.user = {
+                  email: "",
+                  password: "",
+                  name: "",
+                  dob: "",
+                  cPassword: "",
+                  number: "",
+                };
+                this.router.push("/login");
+              })
+              .catch((error) => {
+                console.error("Error adding user:", error);
+              });
+          })
+          .catch((error) => {
+            console.error("Error creating user: ", error);
+            if (error.code === "auth/weak-password") {
+              this.errorMsg = "Password should be at least 6 characters";
+            } else if (error.code === "auth/email-already-in-use") {
+              this.errorMsg = "email already exists";
+            } else {
+              this.errorMsg = "";
+            }
+          });
+      }
     },
   },
   watch: {
@@ -45,13 +91,13 @@ export default {
         <form action="" class="form-control bg-light p-5" @:submit.prevent="AddData">
           <h4 class="text-center">Register</h4>
           <br />
-          <input type="text" class="form-control mb-4" placeholder="Enter Name" v-model="user.name" required />
-          <input type="email" class="form-control mb-4" placeholder="Enter Email" v-model="user.email" required />
+          <input type="text" class="form-control mb-4" placeholder="Enter Name" v-model="name" required />
+          <input type="email" class="form-control mb-4" placeholder="Enter Email" v-model="email" required />
           <label for="" class="">Enter Date Of Birth</label><br />
-          <input type="date" class="form-control mb-4" v-model="user.dob" required max="2024-03-12" />
-          <input type="number" name="" id="" class="form-control mb-4" placeholder="Enter Phone Number" v-model="user.number" required />
-          <input type="password" name="" id="" class="form-control mb-4" placeholder="Enter password" v-model="user.password" required />
-          <input type="password" name="" id="" class="form-control mb-4" placeholder="Confirm Password" v-model="user.cPassword" required />
+          <input type="date" class="form-control mb-4" v-model="dob" required max="2024-03-12" />
+          <input type="number" name="" id="" class="form-control mb-4" placeholder="Enter Phone Number" v-model="number" required />
+          <input type="password" name="" id="" class="form-control mb-4" placeholder="Enter password" v-model="password" required />
+          <input type="password" name="" id="" class="form-control mb-4" placeholder="Confirm Password" v-model="cPassword" required />
 
           <div v-if="errorMsg" class="fs-5 text-danger text-center">{{ errorMsg }}</div>
           <br />
@@ -75,4 +121,75 @@ export default {
   margin: 70px auto;
 }
 </style>
+<!-- <template>
+  <div>
+    <h2>User Management</h2>
+    <form @submit.prevent="addUser">
+      <input type="text" v-model="newUser.name" placeholder="Enter name" required>
+      <input type="email" v-model="newUser.email" placeholder="Enter email" required>
+      <button type="submit">Add User</button>
+    </form>
+    <ul>
+      <li v-for="(user, index) in users" :key="index">
+        <p>{{ user.name }} - {{ user.email }}</p>
+        <button @click="editUser(user)">Edit</button>
+        <button @click="deleteUser(user)">Delete</button>
+      </li>
+    </ul>
+  </div>
+</template>
 
+<script>
+import axios from 'axios'
+
+export default {
+  data() {
+    return {
+      users: [],
+      newUser: {
+        name: '',
+        email: ''
+      }
+    }
+  },
+  mounted() {
+    this.fetchUsers()
+  },
+  methods: {
+    fetchUsers() {
+      axios.get('https://YOUR_PROJECT_ID.firebaseio.com/users.json')
+        .then(response => {
+          this.users = Object.values(response.data)
+        })
+        .catch(error => {
+          console.error('Error fetching users:', error)
+        })
+    },
+    addUser() {
+      axios.post('https://YOUR_PROJECT_ID.firebaseio.com/users.json', this.newUser)
+        .then(response => {
+          console.log('User added successfully')
+          this.newUser = { name: '', email: '' }
+          this.fetchUsers()
+        })
+        .catch(error => {
+          console.error('Error adding user:', error)
+        })
+    },
+    editUser(user) {
+      // Implement edit functionality
+      console.log('Edit user:', user)
+    },
+    deleteUser(user) {
+      axios.delete(`https://YOUR_PROJECT_ID.firebaseio.com/users/${user.id}.json`)
+        .then(response => {
+          console.log('User deleted successfully')
+          this.fetchUsers()
+        })
+        .catch(error => {
+          console.error('Error deleting user:', error)
+        })
+    }
+  }
+}
+</script> -->

@@ -1,5 +1,6 @@
 <script>
 import { useRouter } from "vue-router";
+import axios from "axios";
 export default {
   data() {
     return {
@@ -7,9 +8,25 @@ export default {
       password: "",
       router: useRouter(),
       errorMsg: "",
+      postData: [],
     };
   },
-  methods: {},
+  methods: {
+    login() {
+      this.$firebase
+        .auth()
+        .signInWithEmailAndPassword(this.email, this.password)
+        .then(() => {
+          this.router.push("/dashboard");
+        })
+        .catch((error) => {
+          console.log(error);
+          if (error.code === "auth/invalid-credential") {
+            this.errorMsg = "invalide credentials ";
+          }
+        });
+    },
+  },
 };
 </script>
 
