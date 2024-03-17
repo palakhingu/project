@@ -1,5 +1,4 @@
 <script>
-// import { auth } from "../main";
 import { useRouter } from "vue-router";
 import axios from "axios";
 export default {
@@ -28,12 +27,14 @@ export default {
         this.errorMsg = "Password does not match ";
         return;
       } else {
+        // const userId = uuidv4();
         this.$firebase
           .auth()
           .createUserWithEmailAndPassword(this.email, this.password)
           .then((userCredential) => {
             const user = userCredential.user;
             const userInfo = {
+              // id: userId,
               name: this.name,
               email: this.email,
               dob: this.dob,
@@ -107,9 +108,6 @@ export default {
           </center>
           <hr />
           <h5 class="text-center">or</h5>
-          <center>
-            <!-- <button @click="googleSignIn" class="btn btn-dark">Sign up with Google</button> -->
-          </center>
         </form>
       </div>
     </div>
@@ -121,75 +119,3 @@ export default {
   margin: 70px auto;
 }
 </style>
-<!-- <template>
-  <div>
-    <h2>User Management</h2>
-    <form @submit.prevent="addUser">
-      <input type="text" v-model="newUser.name" placeholder="Enter name" required>
-      <input type="email" v-model="newUser.email" placeholder="Enter email" required>
-      <button type="submit">Add User</button>
-    </form>
-    <ul>
-      <li v-for="(user, index) in users" :key="index">
-        <p>{{ user.name }} - {{ user.email }}</p>
-        <button @click="editUser(user)">Edit</button>
-        <button @click="deleteUser(user)">Delete</button>
-      </li>
-    </ul>
-  </div>
-</template>
-
-<script>
-import axios from 'axios'
-
-export default {
-  data() {
-    return {
-      users: [],
-      newUser: {
-        name: '',
-        email: ''
-      }
-    }
-  },
-  mounted() {
-    this.fetchUsers()
-  },
-  methods: {
-    fetchUsers() {
-      axios.get('https://YOUR_PROJECT_ID.firebaseio.com/users.json')
-        .then(response => {
-          this.users = Object.values(response.data)
-        })
-        .catch(error => {
-          console.error('Error fetching users:', error)
-        })
-    },
-    addUser() {
-      axios.post('https://YOUR_PROJECT_ID.firebaseio.com/users.json', this.newUser)
-        .then(response => {
-          console.log('User added successfully')
-          this.newUser = { name: '', email: '' }
-          this.fetchUsers()
-        })
-        .catch(error => {
-          console.error('Error adding user:', error)
-        })
-    },
-    editUser(user) {
-      // Implement edit functionality
-      console.log('Edit user:', user)
-    },
-    deleteUser(user) {
-      axios.delete(`https://YOUR_PROJECT_ID.firebaseio.com/users/${user.id}.json`)
-        .then(response => {
-          console.log('User deleted successfully')
-          this.fetchUsers()
-        })
-        .catch(error => {
-          console.error('Error deleting user:', error)
-        })
-    }
-  }
-}
-</script> -->
