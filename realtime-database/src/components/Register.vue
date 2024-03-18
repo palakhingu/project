@@ -4,14 +4,12 @@ import axios from "axios";
 export default {
   data() {
     return {
-      // user: {
       email: "",
       password: "",
       name: "",
       dob: "",
       cPassword: "",
       number: "",
-      // },
       router: useRouter(),
       errorMsg: "",
       postData: [],
@@ -27,14 +25,12 @@ export default {
         this.errorMsg = "Password does not match ";
         return;
       } else {
-        // const userId = uuidv4();
         this.$firebase
           .auth()
           .createUserWithEmailAndPassword(this.email, this.password)
           .then((userCredential) => {
             const user = userCredential.user;
             const userInfo = {
-              // id: userId,
               name: this.name,
               email: this.email,
               dob: this.dob,
@@ -99,15 +95,13 @@ export default {
           <input type="number" name="" id="" class="form-control mb-4" placeholder="Enter Phone Number" v-model="number" required />
           <input type="password" name="" id="" class="form-control mb-4" placeholder="Enter password" v-model="password" required />
           <input type="password" name="" id="" class="form-control mb-4" placeholder="Confirm Password" v-model="cPassword" required />
-
+          
           <div v-if="errorMsg" class="fs-5 text-danger text-center">{{ errorMsg }}</div>
           <br />
           <div>Alreday have an Account? <router-link to="/login">Sign in</router-link></div>
           <center>
             <button type="submit" class="btn btn-dark mt-4">Submit</button>
           </center>
-          <hr />
-          <h5 class="text-center">or</h5>
         </form>
       </div>
     </div>

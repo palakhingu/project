@@ -1,6 +1,5 @@
 <script>
 import { useRouter } from "vue-router";
-import axios from "axios";
 export default {
   data() {
     return {
