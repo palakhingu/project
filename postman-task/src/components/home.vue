@@ -1,12 +1,9 @@
-<template>
+<!-- <template>
   <div v-if="user">
     <h1>hello, {{ user.name }}</h1>
     <p>Email: {{ user.email }}</p>
-    <!-- Other user details -->
   </div>
-  <!-- <div v-else>
-    <p>Please log in to view your details</p>
-  </div> -->
+ 
 </template>
 
 <script>
@@ -30,6 +27,35 @@ export default {
           // handle error
         });
     }
+  },
+};
+</script> -->
+
+<template>
+  <div>
+    <h4>Welcome, {{ userInfo.name }}</h4>
+    <button @click="logout" class="btn btn-dark">Logout</button><br /><br />
+    <router-link to="/addTask" class="btn btn-dark">Add Task</router-link>
+  </div>
+</template>
+
+<script>
+import AuthService from "../services/AuthService";
+
+export default {
+  data() {
+    return {
+      userInfo: {},
+    };
+  },
+  created() {
+    this.userInfo = AuthService.getUserInfo();
+  },
+  methods: {
+    logout() {
+      AuthService.logout();
+      this.$router.push("/");
+    },
   },
 };
 </script>

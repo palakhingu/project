@@ -1,6 +1,7 @@
 <script>
 import { useRouter } from "vue-router";
 import axios from "axios";
+import AuthService from "@/services/AuthService";
 export default {
   data() {
     return {
@@ -12,48 +13,19 @@ export default {
     };
   },
   methods: {
-    // login() {
-    //   const userInfo = {
-    //     email: this.email,
-    //     password: this.password,
-    //   };
-    //   axios
-    //     .post("http://192.168.1.61:3000/user/login", userInfo)
-    //     .then((response) => {
-    //       console.log(response);
-    //       console.log(response.data);
-    //       this.email = "";
-    //       this.password = "";
-    //       if (response.status == 200) {
-    //         // this.errorMsg = response.data.message;
-    //         this.router.push("/home");
-    //       }
-    //     })
-    //     .catch((error) => {
-    //       console.error(error.response.data.message);
-    //       this.errorMsg = error.response.data.message;
-    //     });
-    // },
-    async login() {
-      const userInfo = {
-        email: this.email,
-        password: this.password,
-      };
-      try {
-        const response = await axios.post("http://192.168.1.61:3000/user/login", userInfo);
-        const token = response.data.token;
-        const id = response.data.data.id;
-        localStorage.setItem("token", token);
-        const userResponse = await axios.get(`http://192.168.1.61:3000/user/get/${id}`, {
-          headers: { Authorization: `Bearer ${token}` },
+    login() {
+      AuthService.login({ email: this.email, password: this.password })
+        .then((response) => {
+          const token = response.data.token;
+          const user = response.data.data;
+          localStorage.setItem("user", JSON.stringify(user));
+          localStorage.setItem("token", token);
+          this.router.push("/addTask");
+        })
+        .catch((error) => {
+          console.error(error.response.data.message);
+          this.errorMsg = error.response.data.message;
         });
-        const user = userResponse.data;
-        // if (response.status == 200) {
-        //   this.router.push("/home");
-        // }
-      } catch (error) {
-        console.error("Login failed:", error);
-      }
     },
   },
 };
