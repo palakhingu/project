@@ -3,7 +3,6 @@ import App from "./App.vue";
 import router from "./router/index";
 import "bootstrap/dist/css/bootstrap.css";
 import AuthService from "./services/AuthService";
-import navbar from "./components/navbar.vue";
 import PrimeVue from "primevue/config";
 import MultiSelect from "primevue/multiselect";
 import "primevue/resources/primevue.min.css";
@@ -14,7 +13,6 @@ const app = createApp(App);
 app.use(router);
 app.use(PrimeVue);
 app.component("MultiSelect", MultiSelect);
-app.component("navbar", navbar);
 router.beforeEach((to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (!AuthService.getUserInfo()) {

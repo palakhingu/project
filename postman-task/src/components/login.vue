@@ -1,6 +1,5 @@
 <script>
 import { useRouter } from "vue-router";
-import axios from "axios";
 import AuthService from "@/services/AuthService";
 export default {
   data() {
@@ -17,13 +16,12 @@ export default {
       AuthService.login({ email: this.email, password: this.password })
         .then((response) => {
           const token = response.data.token;
-          const user = response.data.data;
-          localStorage.setItem("user", JSON.stringify(user));
+          this.user = response.data.data;
+          localStorage.setItem("user", JSON.stringify(this.user));
           localStorage.setItem("token", token);
           this.router.push("/addTask");
         })
         .catch((error) => {
-          console.error(error.response.data.message);
           this.errorMsg = error.response.data.message;
         });
     },
@@ -36,7 +34,7 @@ export default {
     <div class="row">
       <div class="col-lg-4 col-md-1 col-sm-1"></div>
       <div class="col-lg-4 col-md-10 col-sm-12">
-        <form action="" class="form-control bg-light p-5" v-on:submit.prevent="login">
+        <form class="form-control bg-light p-5" v-on:submit.prevent="login">
           <h4 class="text-center">Login</h4>
           <br />
           <input type="email" class="form-control mb-4" placeholder="Enter Email" v-model="email" required />

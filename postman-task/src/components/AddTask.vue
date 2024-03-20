@@ -1,5 +1,4 @@
 <template>
-  <navbar></navbar>
   <div class="container">
     <div class="row">
       <div class="col-lg-4 col-md-1 col-sm-1"></div>
@@ -9,11 +8,13 @@
           <br />
           <div class="text-center fs-5 text-danger" v-if="errorMessage">{{ errorMessage }}</div>
           <br />
+          <h6 class="form-label text-center">Name</h6>
           <input type="text" class="form-control mb-4 text-center" placeholder="enter name" v-model="name" required />
+          <h6 class="form-label text-center">Description</h6>
           <textarea class="form-control mb-4 text-center" placeholder="enter description" v-model="description" required></textarea>
           <h6 class="form-label text-center">Create Date</h6>
           <input type="date" name="" id="" class="form-control mb-4 text-center" placeholder="Enter password" v-model="createDate" required />
-          <h6 class="form-label text-center">Select tag:</h6>
+          <h6 class="form-label text-center">Select tag</h6>
           <MultiSelect v-model="selectedTags" :options="allTags" optionLabel="tag" optionValue="id" display="chip" class="w-full" placeholder="select tags" />
           <div class="d-flex justify-content-center">
             <button type="submit" class="btn btn-dark mt-4">Add</button>
@@ -26,7 +27,6 @@
 
 <script>
 import axios from "axios";
-import login from "./login.vue";
 
 export default {
   data() {
@@ -45,8 +45,15 @@ export default {
     this.getUser();
     this.fetchUserData();
   },
+  // created() {
+  //   this.getTags();
+  //   this.getUser();
+  //   this.fetchUserData();
+  // },
+
   methods: {
     AddTask() {
+      console.log("this.stackholder", this.stackholder);
       let addTag = {
         name: this.name,
         description: this.description,
@@ -54,7 +61,6 @@ export default {
         stakeHolder: Object.values(this.stackholder),
         tags: Object.values(this.selectedTags),
       };
-      console.log(addTag);
       axios
         .post("http://192.168.1.61:3000/task/create", addTag)
         .then((res) => {
@@ -73,7 +79,8 @@ export default {
       let user = JSON.parse(localStorage.getItem("user"));
       if (user) {
         this.stackholder.push(user.id);
-        console.log(Object.values(this.stackholder));
+        // console.log(this.stackholder);
+        // console.log(Object.values(this.stackholder));
       } else {
         this.errorMessage = "user is not logged in, Please log in to add Task";
       }
@@ -90,655 +97,30 @@ export default {
     },
 
     fetchUserData() {
-      const taskId = this.$route.params.id;
-      console.log(taskId);
-      axios
-        .get(`http://192.168.1.61:3000/task/get/${taskId}`)
-        .then((response) => {
-          console.log(response.data.data.name);
-          this.name = response.data.data.name;
-          this.description = response.data.data.description;
-          this.createDate = response.data.data.createDate;
-
-          const selectedTagIds = response.data.data.tags;
-          console.log(selectedTagIds);
-
-          // Clear existing selected tags
-          this.selectedTags = [];
-
-          // Iterate through selected tag IDs and find corresponding tag objects
-          selectedTagIds.forEach((id) => {
-            const tag = this.allTags.find((tag) => tag.id == id);
-            console.log(tag);
-            // if (tags) {
-            // this.selectedTags.push(tags); // Push tag object into selectedTags array
-            // }
+      const taskId = this.$route?.params?.id;
+      if (taskId) {
+        axios
+          .get(`http://192.168.1.61:3000/task/get/${taskId}`)
+          .then((response) => {
+            console.log(response);
+            console.log(response.data.data.name);
+            const data = response.data.data;
+            this.name = data.name;
+            this.description = data.description;
+            this.createDate = data.createDate;
+            data.tags.forEach((id) => {
+              this.allTags.find((tags) => {
+                if (tags.id == id) {
+                  this.selectedTags.push(tags.id);
+                }
+              });
+            });
+          })
+          .catch((error) => {
+            console.error("Error fetching user data:", error);
+            this.errorMsg = "Failed to fetch user data. Please try again.";
           });
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-          this.errorMsg = "Failed to fetch user data. Please try again.";
-        });
-    },
-
-    fetchUserData() {
-      const taskId = this.$route.params.id;
-      console.log(taskId);
-      axios
-        .get(`http://192.168.1.61:3000/task/get/${taskId}`)
-        .then((response) => {
-          console.log(response.data.data.name);
-          this.name = response.data.data.name;
-          this.description = response.data.data.description;
-          this.createDate = response.data.data.createDate;
-
-          const selectedTagIds = response.data.data.tags;
-          console.log(selectedTagIds);
-
-          // Clear existing selected tags
-          this.selectedTags = [];
-
-          // Iterate through selected tag IDs and find corresponding tag objects
-          selectedTagIds.forEach((id) => {
-            const tag = this.allTags.find((tag) => tag.id == id);
-            if (tag) {
-              this.selectedTags.push(tag); // Push tag object into selectedTags array
-            }
-          });
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-          this.errorMsg = "Failed to fetch user data. Please try again.";
-        });
-    },
-
-    fetchUserData() {
-      const taskId = this.$route.params.id;
-      console.log(taskId);
-      axios
-        .get(`http://192.168.1.61:3000/task/get/${taskId}`)
-        .then((response) => {
-          console.log(response.data.data.name);
-          this.name = response.data.data.name;
-          this.description = response.data.data.description;
-          this.createDate = response.data.data.createDate;
-
-          const selectedTagIds = response.data.data.tags;
-          console.log(selectedTagIds);
-
-          // Clear existing selected tags
-          this.selectedTags = [];
-
-          // Iterate through selected tag IDs and find corresponding tag objects
-          selectedTagIds.forEach((id) => {
-            const tag = this.allTags.find((tag) => tag.id == id);
-            if (tag) {
-              this.selectedTags.push(tag); // Push tag object into selectedTags array
-            }
-          });
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-          this.errorMsg = "Failed to fetch user data. Please try again.";
-        });
-    },
-
-    fetchUserData() {
-      const taskId = this.$route.params.id;
-      console.log(taskId);
-      axios
-        .get(`http://192.168.1.61:3000/task/get/${taskId}`)
-        .then((response) => {
-          console.log(response.data.data.name);
-          this.name = response.data.data.name;
-          this.description = response.data.data.description;
-          this.createDate = response.data.data.createDate;
-
-          const selectedTagIds = response.data.data.tags;
-          console.log(selectedTagIds);
-
-          // Clear existing selected tags
-          this.selectedTags = [];
-
-          // Iterate through selected tag IDs and find corresponding tag objects
-          selectedTagIds.forEach((id) => {
-            const tag = this.allTags.find((tag) => tag.id == id);
-            if (tag) {
-              this.selectedTags.push(tag); // Push tag object into selectedTags array
-            }
-          });
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-          this.errorMsg = "Failed to fetch user data. Please try again.";
-        });
-    },
-
-    fetchUserData() {
-      const taskId = this.$route.params.id;
-      console.log(taskId);
-      axios
-        .get(`http://192.168.1.61:3000/task/get/${taskId}`)
-        .then((response) => {
-          console.log(response.data.data.name);
-          this.name = response.data.data.name;
-          this.description = response.data.data.description;
-          this.createDate = response.data.data.createDate;
-
-          const selectedTagIds = response.data.data.tags;
-          console.log(selectedTagIds);
-
-          // Clear existing selected tags
-          this.selectedTags = [];
-
-          // Iterate through selected tag IDs and find corresponding tag objects
-          selectedTagIds.forEach((id) => {
-            const tag = this.allTags.find((tag) => tag.id == id);
-            if (tag) {
-              this.selectedTags.push(tag); // Push tag object into selectedTags array
-            }
-          });
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-          this.errorMsg = "Failed to fetch user data. Please try again.";
-        });
-    },
-
-    fetchUserData() {
-      const taskId = this.$route.params.id;
-      console.log(taskId);
-      axios
-        .get(`http://192.168.1.61:3000/task/get/${taskId}`)
-        .then((response) => {
-          console.log(response.data.data.name);
-          this.name = response.data.data.name;
-          this.description = response.data.data.description;
-          this.createDate = response.data.data.createDate;
-
-          const selectedTagIds = response.data.data.tags;
-          console.log(selectedTagIds);
-
-          // Clear existing selected tags
-          this.selectedTags = [];
-
-          // Iterate through selected tag IDs and find corresponding tag objects
-          selectedTagIds.forEach((id) => {
-            const tag = this.allTags.find((tag) => tag.id == id);
-            if (tag) {
-              this.selectedTags.push(tag); // Push tag object into selectedTags array
-            }
-          });
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-          this.errorMsg = "Failed to fetch user data. Please try again.";
-        });
-    },
-
-    fetchUserData() {
-      const taskId = this.$route.params.id;
-      console.log(taskId);
-      axios
-        .get(`http://192.168.1.61:3000/task/get/${taskId}`)
-        .then((response) => {
-          console.log(response.data.data.name);
-          this.name = response.data.data.name;
-          this.description = response.data.data.description;
-          this.createDate = response.data.data.createDate;
-
-          const selectedTagIds = response.data.data.tags;
-          console.log(selectedTagIds);
-
-          // Clear existing selected tags
-          this.selectedTags = [];
-
-          // Iterate through selected tag IDs and find corresponding tag objects
-          selectedTagIds.forEach((id) => {
-            const tag = this.allTags.find((tag) => tag.id == id);
-            if (tag) {
-              this.selectedTags.push(tag); // Push tag object into selectedTags array
-            }
-          });
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-          this.errorMsg = "Failed to fetch user data. Please try again.";
-        });
-    },
-
-    fetchUserData() {
-      const taskId = this.$route.params.id;
-      console.log(taskId);
-      axios
-        .get(`http://192.168.1.61:3000/task/get/${taskId}`)
-        .then((response) => {
-          console.log(response.data.data.name);
-          this.name = response.data.data.name;
-          this.description = response.data.data.description;
-          this.createDate = response.data.data.createDate;
-
-          const selectedTagIds = response.data.data.tags;
-          console.log(selectedTagIds);
-
-          // Clear existing selected tags
-          this.selectedTags = [];
-
-          // Iterate through selected tag IDs and find corresponding tag objects
-          selectedTagIds.forEach((id) => {
-            const tag = this.allTags.find((tag) => tag.id == id);
-            if (tag) {
-              this.selectedTags.push(tag); // Push tag object into selectedTags array
-            }
-          });
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-          this.errorMsg = "Failed to fetch user data. Please try again.";
-        });
-    },
-
-    fetchUserData() {
-      const taskId = this.$route.params.id;
-      console.log(taskId);
-      axios
-        .get(`http://192.168.1.61:3000/task/get/${taskId}`)
-        .then((response) => {
-          console.log(response.data.data.name);
-          this.name = response.data.data.name;
-          this.description = response.data.data.description;
-          this.createDate = response.data.data.createDate;
-
-          const selectedTagIds = response.data.data.tags;
-          console.log(selectedTagIds);
-
-          // Clear existing selected tags
-          this.selectedTags = [];
-
-          // Iterate through selected tag IDs and find corresponding tag objects
-          selectedTagIds.forEach((id) => {
-            const tag = this.allTags.find((tag) => tag.id == id);
-            if (tag) {
-              this.selectedTags.push(tag); // Push tag object into selectedTags array
-            }
-          });
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-          this.errorMsg = "Failed to fetch user data. Please try again.";
-        });
-    },
-
-    fetchUserData() {
-      const taskId = this.$route.params.id;
-      console.log(taskId);
-      axios
-        .get(`http://192.168.1.61:3000/task/get/${taskId}`)
-        .then((response) => {
-          console.log(response.data.data.name);
-          this.name = response.data.data.name;
-          this.description = response.data.data.description;
-          this.createDate = response.data.data.createDate;
-
-          const selectedTagIds = response.data.data.tags;
-          console.log(selectedTagIds);
-
-          // Clear existing selected tags
-          this.selectedTags = [];
-
-          // Iterate through selected tag IDs and find corresponding tag objects
-          selectedTagIds.forEach((id) => {
-            const tag = this.allTags.find((tag) => tag.id == id);
-            if (tag) {
-              this.selectedTags.push(tag); // Push tag object into selectedTags array
-            }
-          });
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-          this.errorMsg = "Failed to fetch user data. Please try again.";
-        });
-    },
-
-    fetchUserData() {
-      const taskId = this.$route.params.id;
-      console.log(taskId);
-      axios
-        .get(`http://192.168.1.61:3000/task/get/${taskId}`)
-        .then((response) => {
-          console.log(response.data.data.name);
-          this.name = response.data.data.name;
-          this.description = response.data.data.description;
-          this.createDate = response.data.data.createDate;
-
-          const selectedTagIds = response.data.data.tags;
-          console.log(selectedTagIds);
-
-          // Clear existing selected tags
-          this.selectedTags = [];
-
-          // Iterate through selected tag IDs and find corresponding tag objects
-          selectedTagIds.forEach((id) => {
-            const tag = this.allTags.find((tag) => tag.id == id);
-            if (tag) {
-              this.selectedTags.push(tag); // Push tag object into selectedTags array
-            }
-          });
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-          this.errorMsg = "Failed to fetch user data. Please try again.";
-        });
-    },
-
-    fetchUserData() {
-      const taskId = this.$route.params.id;
-      console.log(taskId);
-      axios
-        .get(`http://192.168.1.61:3000/task/get/${taskId}`)
-        .then((response) => {
-          console.log(response.data.data.name);
-          this.name = response.data.data.name;
-          this.description = response.data.data.description;
-          this.createDate = response.data.data.createDate;
-
-          const selectedTagIds = response.data.data.tags;
-          console.log(selectedTagIds);
-
-          // Clear existing selected tags
-          this.selectedTags = [];
-
-          // Iterate through selected tag IDs and find corresponding tag objects
-          selectedTagIds.forEach((id) => {
-            const tag = this.allTags.find((tag) => tag.id == id);
-            if (tag) {
-              this.selectedTags.push(tag); // Push tag object into selectedTags array
-            }
-          });
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-          this.errorMsg = "Failed to fetch user data. Please try again.";
-        });
-    },
-
-    fetchUserData() {
-      const taskId = this.$route.params.id;
-      console.log(taskId);
-      axios
-        .get(`http://192.168.1.61:3000/task/get/${taskId}`)
-        .then((response) => {
-          console.log(response.data.data.name);
-          this.name = response.data.data.name;
-          this.description = response.data.data.description;
-          this.createDate = response.data.data.createDate;
-
-          const selectedTagIds = response.data.data.tags;
-          console.log(selectedTagIds);
-
-          // Clear existing selected tags
-          this.selectedTags = [];
-
-          // Iterate through selected tag IDs and find corresponding tag objects
-          selectedTagIds.forEach((id) => {
-            const tag = this.allTags.find((tag) => tag.id == id);
-            if (tag) {
-              this.selectedTags.push(tag); // Push tag object into selectedTags array
-            }
-          });
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-          this.errorMsg = "Failed to fetch user data. Please try again.";
-        });
-    },
-
-    fetchUserData() {
-      const taskId = this.$route.params.id;
-      console.log(taskId);
-      axios
-        .get(`http://192.168.1.61:3000/task/get/${taskId}`)
-        .then((response) => {
-          console.log(response.data.data.name);
-          this.name = response.data.data.name;
-          this.description = response.data.data.description;
-          this.createDate = response.data.data.createDate;
-
-          const selectedTagIds = response.data.data.tags;
-          console.log(selectedTagIds);
-
-          // Clear existing selected tags
-          this.selectedTags = [];
-
-          // Iterate through selected tag IDs and find corresponding tag objects
-          selectedTagIds.forEach((id) => {
-            const tag = this.allTags.find((tag) => tag.id == id);
-            if (tag) {
-              this.selectedTags.push(tag); // Push tag object into selectedTags array
-            }
-          });
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-          this.errorMsg = "Failed to fetch user data. Please try again.";
-        });
-    },
-
-    fetchUserData() {
-      const taskId = this.$route.params.id;
-      console.log(taskId);
-      axios
-        .get(`http://192.168.1.61:3000/task/get/${taskId}`)
-        .then((response) => {
-          console.log(response.data.data.name);
-          this.name = response.data.data.name;
-          this.description = response.data.data.description;
-          this.createDate = response.data.data.createDate;
-
-          const selectedTagIds = response.data.data.tags;
-          console.log(selectedTagIds);
-
-          // Clear existing selected tags
-          this.selectedTags = [];
-
-          // Iterate through selected tag IDs and find corresponding tag objects
-          selectedTagIds.forEach((id) => {
-            const tag = this.allTags.find((tag) => tag.id == id);
-            if (tag) {
-              this.selectedTags.push(tag); // Push tag object into selectedTags array
-            }
-          });
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-          this.errorMsg = "Failed to fetch user data. Please try again.";
-        });
-    },
-
-    fetchUserData() {
-      const taskId = this.$route.params.id;
-      console.log(taskId);
-      axios
-        .get(`http://192.168.1.61:3000/task/get/${taskId}`)
-        .then((response) => {
-          console.log(response.data.data.name);
-          this.name = response.data.data.name;
-          this.description = response.data.data.description;
-          this.createDate = response.data.data.createDate;
-
-          const selectedTagIds = response.data.data.tags;
-          console.log(selectedTagIds);
-
-          // Clear existing selected tags
-          this.selectedTags = [];
-
-          // Iterate through selected tag IDs and find corresponding tag objects
-          selectedTagIds.forEach((id) => {
-            const tag = this.allTags.find((tag) => tag.id == id);
-            if (tag) {
-              this.selectedTags.push(tag); // Push tag object into selectedTags array
-            }
-          });
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-          this.errorMsg = "Failed to fetch user data. Please try again.";
-        });
-    },
-
-    fetchUserData() {
-      const taskId = this.$route.params.id;
-      console.log(taskId);
-      axios
-        .get(`http://192.168.1.61:3000/task/get/${taskId}`)
-        .then((response) => {
-          console.log(response.data.data.name);
-          this.name = response.data.data.name;
-          this.description = response.data.data.description;
-          this.createDate = response.data.data.createDate;
-
-          const selectedTagIds = response.data.data.tags;
-          console.log(selectedTagIds);
-
-          // Clear existing selected tags
-          this.selectedTags = [];
-
-          // Iterate through selected tag IDs and find corresponding tag objects
-          selectedTagIds.forEach((id) => {
-            const tag = this.allTags.find((tag) => tag.id == id);
-            if (tag) {
-              this.selectedTags.push(tag); // Push tag object into selectedTags array
-            }
-          });
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-          this.errorMsg = "Failed to fetch user data. Please try again.";
-        });
-    },
-
-    fetchUserData() {
-      const taskId = this.$route.params.id;
-      console.log(taskId);
-      axios
-        .get(`http://192.168.1.61:3000/task/get/${taskId}`)
-        .then((response) => {
-          console.log(response.data.data.name);
-          this.name = response.data.data.name;
-          this.description = response.data.data.description;
-          this.createDate = response.data.data.createDate;
-
-          const selectedTagIds = response.data.data.tags;
-          console.log(selectedTagIds);
-
-          // Clear existing selected tags
-          this.selectedTags = [];
-
-          // Iterate through selected tag IDs and find corresponding tag objects
-          selectedTagIds.forEach((id) => {
-            const tag = this.allTags.find((tag) => tag.id == id);
-            if (tag) {
-              this.selectedTags.push(tag); // Push tag object into selectedTags array
-            }
-          });
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-          this.errorMsg = "Failed to fetch user data. Please try again.";
-        });
-    },
-
-    fetchUserData() {
-      const taskId = this.$route.params.id;
-      console.log(taskId);
-      axios
-        .get(`http://192.168.1.61:3000/task/get/${taskId}`)
-        .then((response) => {
-          console.log(response.data.data.name);
-          this.name = response.data.data.name;
-          this.description = response.data.data.description;
-          this.createDate = response.data.data.createDate;
-
-          const selectedTagIds = response.data.data.tags;
-          console.log(selectedTagIds);
-
-          // Clear existing selected tags
-          this.selectedTags = [];
-
-          // Iterate through selected tag IDs and find corresponding tag objects
-          selectedTagIds.forEach((id) => {
-            const tag = this.allTags.find((tag) => tag.id == id);
-            if (tag) {
-              this.selectedTags.push(tag); // Push tag object into selectedTags array
-            }
-          });
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-          this.errorMsg = "Failed to fetch user data. Please try again.";
-        });
-    },
-
-    fetchUserData() {
-      const taskId = this.$route.params.id;
-      console.log(taskId);
-      axios
-        .get(`http://192.168.1.61:3000/task/get/${taskId}`)
-        .then((response) => {
-          console.log(response.data.data.name);
-          this.name = response.data.data.name;
-          this.description = response.data.data.description;
-          this.createDate = response.data.data.createDate;
-
-          const selectedTagIds = response.data.data.tags;
-          console.log(selectedTagIds);
-
-          // Clear existing selected tags
-          this.selectedTags = [];
-
-          // Iterate through selected tag IDs and find corresponding tag objects
-          selectedTagIds.forEach((id) => {
-            const tag = this.allTags.find((tag) => tag.id == id);
-            if (tag) {
-              this.selectedTags.push(tag); // Push tag object into selectedTags array
-            }
-          });
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-          this.errorMsg = "Failed to fetch user data. Please try again.";
-        });
-    },
-
-    fetchUserData() {
-      const taskId = this.$route.params.id;
-      console.log(taskId);
-      axios
-        .get(`http://192.168.1.61:3000/task/get/${taskId}`)
-        .then((response) => {
-          console.log(response.data.data.name);
-          this.name = response.data.data.name;
-          this.description = response.data.data.description;
-          this.createDate = response.data.data.createDate;
-
-          const selectedTagIds = response.data.data.tags;
-          console.log(selectedTagIds);
-
-          // Clear existing selected tags
-          this.selectedTags = [];
-
-          // Iterate through selected tag IDs and find corresponding tag objects
-          selectedTagIds.forEach((id) => {
-            const tag = this.allTags.find((tag) => tag.id == id);
-            if (tag) {
-              this.selectedTags.push(tag); // Push tag object into selectedTags array
-            }
-          });
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-          this.errorMsg = "Failed to fetch user data. Please try again.";
-        });
+      }
     },
   },
 };

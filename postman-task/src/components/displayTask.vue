@@ -24,7 +24,7 @@ export default {
               userId: tags.user.id,
               userName: tags.user.name,
             };
-            this.data.push(obj);
+            this.data.unshift(obj);
           }
           console.log(this.data);
         })
@@ -33,14 +33,12 @@ export default {
         });
     },
     edit(id) {
-      // this.$router.push({ name: "addTask", params: { id: id } });
       this.$router.push(`/addTask/${id}`);
     },
   },
 };
 </script>
 <template>
-  <navbar />
   <div class="container">
     <div class="row">
       <div class="col-lg-1 col-md-1 col-sm-1"></div>
@@ -60,7 +58,7 @@ export default {
           </thead>
           <tbody>
             <tr v-for="(tags, index) in data">
-              <td>{{ tags.id }}</td>
+              <td>{{ index + 1 }}</td>
               <td>{{ tags.name }}</td>
               <td>{{ tags.description }}</td>
               <td>{{ tags.createDate }}</td>
@@ -83,5 +81,3 @@ export default {
   margin-top: 100px;
 }
 </style>
-
-<!-- id, name, desc, create date, tags, userid, user name -->
