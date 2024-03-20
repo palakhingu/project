@@ -32,6 +32,10 @@ export default {
           console.log(error);
         });
     },
+    edit(id) {
+      // this.$router.push({ name: "addTask", params: { id: id } });
+      this.$router.push(`/addTask/${id}`);
+    },
   },
 };
 </script>
@@ -51,6 +55,7 @@ export default {
               <th scope="col">Tags</th>
               <th scope="col">User Id</th>
               <th scope="col">User Name</th>
+              <th scope="col">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -62,6 +67,9 @@ export default {
               <td>{{ String(tags.tags) }}</td>
               <td>{{ tags.userId }}</td>
               <td>{{ tags.userName }}</td>
+              <td>
+                <button class="btn btn-primary" @click="edit(tags.id)">Update</button>
+              </td>
             </tr>
           </tbody>
         </table>
