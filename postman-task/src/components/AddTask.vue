@@ -40,16 +40,11 @@ export default {
       errorMessage: "",
     };
   },
-  mounted() {
+  created() {
     this.getTags();
     this.getUser();
     this.fetchUserData();
   },
-  // created() {
-  //   this.getTags();
-  //   this.getUser();
-  //   this.fetchUserData();
-  // },
 
   methods: {
     AddTask() {
@@ -79,8 +74,6 @@ export default {
       let user = JSON.parse(localStorage.getItem("user"));
       if (user) {
         this.stackholder.push(user.id);
-        // console.log(this.stackholder);
-        // console.log(Object.values(this.stackholder));
       } else {
         this.errorMessage = "user is not logged in, Please log in to add Task";
       }
@@ -102,8 +95,6 @@ export default {
         axios
           .get(`http://192.168.1.61:3000/task/get/${taskId}`)
           .then((response) => {
-            console.log(response);
-            console.log(response.data.data.name);
             const data = response.data.data;
             this.name = data.name;
             this.description = data.description;

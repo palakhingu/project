@@ -8,22 +8,27 @@ export default {
       password: "",
       router: useRouter(),
       errorMsg: "",
-      user: null,
     };
   },
   methods: {
     login() {
-      AuthService.login({ email: this.email, password: this.password })
-        .then((response) => {
-          const token = response.data.token;
-          this.user = response.data.data;
-          localStorage.setItem("user", JSON.stringify(this.user));
-          localStorage.setItem("token", token);
-          this.router.push("/addTask");
-        })
-        .catch((error) => {
-          this.errorMsg = error.response.data.message;
-        });
+      const token = localStorage.getItem("token");
+      if (token) {
+        this.errorMsg = "you have already logged in";
+        return;
+      } else {
+        AuthService.login({ email: this.email, password: this.password })
+          .then((response) => {
+            const token = response.data.token;
+            const user = response.data.data;
+            localStorage.setItem("user", JSON.stringify(user));
+            localStorage.setItem("token", token);
+            this.router.push("/addTask");
+          })
+          .catch((error) => {
+            this.errorMsg = error.response.data.message;
+          });
+      }
     },
   },
 };

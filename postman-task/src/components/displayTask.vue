@@ -4,29 +4,48 @@ export default {
   data() {
     return {
       data: [],
+      allTags: [],
+      selectedTags: [],
+      uniqTags: [],
+      tags: [],
     };
   },
   mounted() {
+    this.getTasks();
     this.getTags();
   },
   methods: {
     getTags() {
       axios
+        .get("http://192.168.1.61:3000/tag/get")
+        .then((res) => {
+          this.allTags = res.data.data.reduce((acc, tag) => {
+            acc[tag.id] = tag.tag;
+            return acc;
+          }, {});
+        })
+        .catch((error) => {
+          console.error("Error fetching tags:", error);
+        });
+    },
+
+    getTasks() {
+      axios
         .get("http://192.168.1.61:3000/task/get")
         .then((res) => {
-          for (let tags of res.data.data) {
+          for (let task of res.data.data) {
+            let tags = task.tags.map((tagId) => this.allTags[tagId]).join(" , ");
             let obj = {
-              id: tags.id,
-              name: tags.name,
-              description: tags.description,
-              createDate: tags.createDate,
-              tags: tags.tags,
-              userId: tags.user.id,
-              userName: tags.user.name,
+              id: task.id,
+              name: task.name,
+              description: task.description,
+              createDate: task.createDate,
+              tags: tags,
+              userId: task.user.id,
+              userName: task.user.name,
             };
             this.data.unshift(obj);
           }
-          console.log(this.data);
         })
         .catch((error) => {
           console.log(error);
@@ -38,6 +57,7 @@ export default {
   },
 };
 </script>
+
 <template>
   <div class="container">
     <div class="row">
@@ -62,7 +82,7 @@ export default {
               <td>{{ tags.name }}</td>
               <td>{{ tags.description }}</td>
               <td>{{ tags.createDate }}</td>
-              <td>{{ String(tags.tags) }}</td>
+              <td>{{ tags.tags }}</td>
               <td>{{ tags.userId }}</td>
               <td>{{ tags.userName }}</td>
               <td>
