@@ -10,6 +10,12 @@ export default {
       router: useRouter(),
       errorMsg: "",
       postData: [],
+      show1: false,
+        show2: true,
+        rules: {
+          required: value => !!value || 'Required.',
+          min: v => v.length >= 8 || 'Min 8 characters',
+        },
     };
   },
   methods: {
@@ -74,13 +80,43 @@ export default {
 
   <v-container>
     <v-row justify="center" class="mt-5">
-      <v-col lg="4">
-        <v-form class="p-3 bg-grey-darken-4 elevation-{10}">
-          <h4 class=" ma-2 pa-2 d-flex justify-content-center font-weight-black">Register</h4>
-          <v-text-field v-model="name" label="Your Name" placeholder="Enter Your Email address" type="text"
+      <v-col lg="5">
+        <v-form class="p-5 bg-grey-lighten-3 elevation-10 rounded" @submit.prevent="AddData">
+          <h3 class=" mb-4 pa-2 d-flex justify-content-center font-weight-black">Register</h3>
+          <v-text-field 
+            v-model="name" 
+            label="Enter Name" 
+            placeholder="Enter Your Name" 
+            type="text" 
             variant="outlined"
             :rules="[() => !!name || 'This field is required', () => name.match(/^[a-zA-Z]+$/) || 'enter only alphabates']"
-            class="mb-3"></v-text-field>
+            class="mb-3"
+            >
+          </v-text-field>
+          <v-text-field 
+            v-model="email" 
+            label="Enater Email"
+            placeholder="Enter Your Email address" 
+            type="email"
+            variant="outlined"
+            :rules="[() => !!email || 'This field is required']"
+            class="mb-3">
+          </v-text-field>
+          <v-text-field
+            v-model="password"
+            :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+            :rules="[rules.required, rules.min]"
+            hint="At least 8 characters"
+            label="Enter Your Password"
+            name="input-10-1"
+            counter
+            variant="outlined"
+            placeholder="Enter Your Password"
+            @click:append="show1 = !show1"
+          ></v-text-field>  '
+          <div class="d-flex justify-content-center">
+            <v-btn elevation="4" rounded="lg" size="x-large" color="dark" class="text-white" type="submit">Submit</v-btn>
+          </div>
         </v-form>
       </v-col>
     </v-row>

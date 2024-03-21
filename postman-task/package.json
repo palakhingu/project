@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@mdi/font": "^7.4.47",
     "@vueform/multiselect": "^2.6.6",
     "axios": "^1.6.8",
     "bootstrap": "^5.3.3",
