@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <!-- <div class="container">
     <div class="row">
       <div class="col-lg-4 col-md-1 col-sm-1"></div>
       <div class="col-lg-4 col-md-10 col-sm-12">
@@ -22,7 +22,54 @@
         </form>
       </div>
     </div>
-  </div>
+  </div> -->
+
+
+  <v-container class="container">
+    <v-row justify="center" class="mt-5">
+      <v-col lg="5">
+        <v-form class="p-5 bg-grey-lighten-3 elevation-10 rounded" @submit.prevent="AddTask">
+          <h3 class=" mb-4 pa-2 d-flex justify-content-center font-weight-black">Add Task</h3>
+          <v-text-field 
+            v-model="name" 
+            label="Name" 
+            placeholder="Enter Your Name" 
+            type="text" 
+            variant="outlined"
+            :rules="[() => !!name || 'This field is required']"
+            class="mb-3"
+            >
+          </v-text-field>
+          <v-textarea
+          label="Description"
+          row-height="25"
+          rows="3"
+          variant="outlined"
+          auto-grow
+          shaped
+          v-model="description"
+          :rules="[() => !!description || 'This field is required']"
+        >
+      </v-textarea>
+         <v-text-field type="date" name="" id="" class="w-100 mb-4"  label="create date" variant="outlined"  v-model="createDate" required />
+         <v-select
+              v-model="selectedTags"
+              :items="items.map(item => item.tags)"
+              item-value="id"
+              item-text="tags"
+              label="Select tags"
+              chips
+              multiple
+              variant="outlined"
+            ></v-select>
+          <div class="d-flex justify-content-center">
+            <v-btn elevation="4" rounded="lg" size="x-large" color="dark" class="text-white" type="submit">Submit</v-btn>
+          </div>
+        </v-form>
+      </v-col>
+    </v-row>
+  </v-container>
+
 </template>
 
 <script>
@@ -38,6 +85,11 @@ export default {
       allTags: [],
       selectedTags: [],
       errorMessage: "",
+      // items: ['foo', 'bar', 'fizz', 'buzz'],
+      items: [
+  { id: 1, tags: "palak" },
+  { id: 2, tags: "spinach" }
+]
     };
   },
   created() {

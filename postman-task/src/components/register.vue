@@ -11,11 +11,7 @@ export default {
       errorMsg: "",
       postData: [],
       show1: false,
-        show2: true,
-        rules: {
-          required: value => !!value || 'Required.',
-          min: v => v.length >= 8 || 'Min 8 characters',
-        },
+      show2: true
     };
   },
   methods: {
@@ -41,19 +37,10 @@ export default {
     },
   },
 
-  watch: {
-    name(val) {
-      if (!val.match(/^[a-zA-Z]+$/)) {
-        this.errorMsg = "please enter only alphabates";
-      } else {
-        this.errorMsg = "";
-      }
-    },
-  },
 };
 </script>
 
-<template>
+
   <!-- <div class="container"> -->
   <!-- <div class="row"> -->
   <!-- <div class="col-lg-4 col-md-1 col-sm-1"></div> -->
@@ -77,8 +64,8 @@ export default {
   <!-- </div> -->
   <!-- </div> -->
   <!-- </div> -->
-
-  <v-container>
+  <template>
+  <v-container class="container">
     <v-row justify="center" class="mt-5">
       <v-col lg="5">
         <v-form class="p-5 bg-grey-lighten-3 elevation-10 rounded" @submit.prevent="AddData">
@@ -104,16 +91,15 @@ export default {
           </v-text-field>
           <v-text-field
             v-model="password"
-            :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-            :rules="[rules.required, rules.min]"
-            hint="At least 8 characters"
+            :append-inner-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+            :rules="[() => !!password || 'This field is required', () => password.length>=6  || 'min 6 characters']"
             label="Enter Your Password"
-            name="input-10-1"
             counter
             variant="outlined"
             placeholder="Enter Your Password"
             @click:append="show1 = !show1"
           ></v-text-field>  '
+            <div class="mb-4">Alreday have an Account? <router-link to="/login" class=" font-weight-black">Sign in</router-link></div>
           <div class="d-flex justify-content-center">
             <v-btn elevation="4" rounded="lg" size="x-large" color="dark" class="text-white" type="submit">Submit</v-btn>
           </div>
