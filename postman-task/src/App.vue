@@ -8,11 +8,12 @@ export default {
 </script>
 
 <template>
-  <!-- <navbar /> -->
   <v-app>
-    <router-view></router-view>
+    <navbar />
 
+    <router-view></router-view>
   </v-app>
+
 </template>
 
 <style scoped></style>

@@ -5,16 +5,33 @@ export default {
     return {
       data: [],
       allTags: [],
-      selectedTags: [],
-      uniqTags: [],
-      tags: [],
+      user: []
     };
   },
   mounted() {
     this.getTasks();
     this.getTags();
+    this.getUser();
+  },
+  created() {
+    this.getTasks();
+    this.getTags();
+    this.getUser();
   },
   methods: {
+    getUser() {
+      axios
+        .get("http://192.168.1.61:3000/user/get/")
+        .then((res) => {
+          this.user = res.data.data.reduce((acc, user) => {
+            acc[user.id] = user.name;
+            return acc;
+          }, {});
+        })
+        .catch((error) => {
+          console.error("Error fetching tags:", error);
+        });
+    },
     getTags() {
       axios
         .get("http://192.168.1.61:3000/tag/get")
@@ -33,16 +50,17 @@ export default {
       axios
         .get("http://192.168.1.61:3000/task/get")
         .then((res) => {
+
           for (let task of res.data.data) {
             let tags = task.tags.map((tagId) => this.allTags[tagId]).join(" , ");
+            let user = task.stakeHolder.map((userId) => this.user[userId]).join(" , ");
             let obj = {
               id: task.id,
               name: task.name,
               description: task.description,
               createDate: task.createDate,
               tags: tags,
-              userId: task.user.id,
-              userName: task.user.name,
+              stackHoldes: user,
             };
             this.data.unshift(obj);
           }
@@ -59,21 +77,33 @@ export default {
 </script>
 
 <template>
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-1 col-md-1 col-sm-1"></div>
-      <div class="col-lg-10 col-md-12 col-sm-12">
-        <table class="table table-striped">
+  <v-container class="container">
+    <v-row justify="center" class="mt-5">
+      <v-col lg="12">
+        <v-table height="600px" fixed-header>
           <thead>
-            <tr class="table-dark">
-              <th scope="col">Task id</th>
-              <th scope="col">Name</th>
-              <th scope="col">Description</th>
-              <th scope="col">Create Date</th>
-              <th scope="col">Tags</th>
-              <th scope="col">User Id</th>
-              <th scope="col">User Name</th>
-              <th scope="col">Action</th>
+            <tr>
+              <th class="text-center  text-h6">
+                Task id
+              </th>
+              <th class="tex-center text-h6">
+                Name
+              </th>
+              <th class="text-center text-h6">
+                Description
+              </th>
+              <th class="tex-center text-h6">
+                Create date
+              </th>
+              <th class="text-center text-h6">
+                Tags
+              </th>
+              <th class="tex-center text-h6">
+                Stack holders
+              </th>
+              <th class="tex-center text-h6">
+                Action
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -83,45 +113,21 @@ export default {
               <td>{{ tags.description }}</td>
               <td>{{ tags.createDate }}</td>
               <td>{{ tags.tags }}</td>
-              <td>{{ tags.userId }}</td>
-              <td>{{ tags.userName }}</td>
+              <td>{{ tags.stackHoldes }}</td>
               <td>
-                <button class="btn btn-primary" @click="edit(tags.id)">Update</button>
+                <v-btn elevation="4" rounded="lg" size="small" color="primary" class="text-white"
+                  @click="edit(tags.id)">Update</v-btn>
               </td>
             </tr>
           </tbody>
-        </table>
-        <v-table
-    height="300px"
-    fixed-header
-  >
-    <thead>
-      <tr>
-        <th class="text-left">
-          Name
-        </th>
-        <th class="text-left">
-          Calories
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr
-        v-for="item in desserts"
-        :key="item.name"
-      >
-        <td>{{ item.name }}</td>
-        <td>{{ item.calories }}</td>
-      </tr>
-    </tbody>
-  </v-table>
-        <br />
-      </div>
-    </div>
-  </div>
+        </v-table>
+      </v-col>
+    </v-row>
+  </v-container>
+
 </template>
 <style scoped>
 .container {
-  margin-top: 100px;
+  margin-top: 60px;
 }
 </style>
