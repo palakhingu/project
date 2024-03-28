@@ -18,7 +18,7 @@ export default {
 
 <template>
 
-  <v-app-bar app color="dark" class="text-white">
+  <v-app-bar color="dark" class="text-white">
     <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
     <router-link to="/" class="router-link"><v-toolbar-title>My App</v-toolbar-title></router-link>
     <v-spacer></v-spacer>
@@ -29,7 +29,7 @@ export default {
     <v-btn text @click="logout">Logout</v-btn>
   </v-app-bar>
 
-  <v-navigation-drawer v-model="drawer" app>
+  <v-navigation-drawer v-model="drawer">
     <v-list>
       <router-link to="/" class="router-link">
         <v-list-item link>
@@ -61,12 +61,17 @@ export default {
             <v-icon>mdi-check-circle-outline</v-icon>
           </v-list-item-icon>
           <v-list-item-title>Display Task</v-list-item-title>
-
-
         </v-list-item>
       </router-link>
 
     </v-list>
+    <template v-slot:append>
+      <div class="pa-2">
+        <v-btn block color="dark" class="text-white" @click="logout">
+          Logout
+        </v-btn>
+      </div>
+    </template>
   </v-navigation-drawer>
 </template>
 <style>

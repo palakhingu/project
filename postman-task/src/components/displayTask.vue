@@ -50,7 +50,7 @@ export default {
       axios
         .get("http://192.168.1.61:3000/task/get")
         .then((res) => {
-
+          console.log(res.data.data);
           for (let task of res.data.data) {
             let tags = task.tags.map((tagId) => this.allTags[tagId]).join(" , ");
             let user = task.stakeHolder.map((userId) => this.user[userId]).join(" , ");
